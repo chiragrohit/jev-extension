@@ -41,6 +41,20 @@ cd jev-extension
 
 ## 2. Set the API key
 
+Create a `.env` file in the root directory (or copy `.env.example`):
+
+```bash
+cp .env.example .env
+```
+
+Add your key to `.env`:
+
+```env
+TYPESAFE_API_KEY=YOUR_API_KEY
+```
+
+Alternatively, you can export it in your terminal session:
+
 ### Windows PowerShell
 
 ```powershell
@@ -53,7 +67,8 @@ $env:TYPESAFE_API_KEY="YOUR_API_KEY"
 export TYPESAFE_API_KEY="YOUR_API_KEY"
 ```
 
-Do not commit the key.
+Do not commit the `.env` file or key.
+
 
 ## 3. Start the local server
 
@@ -80,42 +95,78 @@ chrome://extensions
 Then:
 
 1. Enable **Developer mode**.
-2. Click **Load unpacked**.
+2. Click **Load unpacked** (or click the reload icon if already loaded).
 3. Select the repository folder.
 4. Open any webpage.
-5. Click the Jev extension icon.
+5. Click the **Jev extension icon** in your toolbar to open Chrome's native side panel.
 
-The extension is hard-wired to:
+The extension connects to:
 
 ```
 http://127.0.0.1:8787/api/ask
 ```
 
-There is no backend URL setting because this is intentionally local-only.
+## 5. Interact like a Chatbot
 
-## 5. Ask
+The native Chrome side panel docks directly into Chrome on the right side. It is completely embedded and does not overlay the webpage, giving you a compact, native chatbot interface.
 
 Example:
 
-> Does this page mention the application deadline?
+> Does this page mention the IPO price?
 
 If Jev finds an answer:
 
 ```
-✓ Answer found on this page
+✓ Answer found on this page (95%)
 
-"The last date for applications is..."
-    
-[Go to answer]
+"But the IPO price band right now tops out at ₹1,785."
+
+[Jump to passage]
 ```
 
-Click **Go to answer** and the extension scrolls to and highlights the passage.
+Click **Jump to passage** (or it will auto-highlight) to smoothly scroll the active webpage to the passage with an amber highlight right beside your chat!
 
 If the answer is not present:
 
 ```
 ✕ No answer found on this page
 ```
+
+## 6. Sentiment Scan
+
+Click the **📊 Sentiment** button in the side panel toolbar to analyze page sentiment with Jev:
+- **Positive statements**: highlighted in subtle green (`#bbf7d0`).
+- **Negative statements**: highlighted in subtle red (`#fecaca`).
+- **Neutral statements**: no highlight.
+
+## 7. Custom Semantic Scan & Presets
+
+Click the **🔍 Custom Scan** button to scan the page for *any* custom criteria or topic (e.g. `"content talking positive about Sam Altman"`, `"regulatory risks"`, `"pricing & fees"`):
+- Evaluates sentences with TypeSafe Jev and illuminates matching statements on the webpage in soft violet (`#c7d2fe`).
+- Automatically saves new custom scans as reusable one-click presets in **IndexedDB**.
+- Preloaded with common presets (Risks & Warnings, Pricing & Numbers, Growth & Milestones).
+
+## 8. Toggle Highlights by Result Set
+
+Easily control your view without clutter or wiping your work:
+- Each result card (Q&A Answer, Sentiment Scan, and Custom Scan) features an instant **`👁 Visible` / `🚫 Hidden`** toggle button.
+- Toggling immediately reveals or hides the **entire result set** on the webpage without touching other highlights or destroying DOM mark coordinates.
+- Visibility states are persisted per page in IndexedDB and restored upon return.
+
+## 9. Auto-Adaptive Granularity (Entity, Phrase, Sentence)
+
+Jev automatically determines the ideal highlight granularity based on the query:
+- Questions asking for specific names, numbers, acronyms, dates, or titles isolate the exact **entity/word** or **phrase** target on the page with pinpoint precision (`📌 target`).
+- Broad conceptual inquiries or explanations highlight the full context sentence/passage.
+- No manual chip selection or micro-management required.
+
+## 10. Persistent IndexedDB & Header Tools
+
+- **Persistent Memory**: Chats, sentiment scans, custom scans, active passage indicators, and result-set visibility states are stored in **IndexedDB** per URL. Revisiting any page automatically restores your previous conversation and re-illuminates all highlights on the page!
+- **Two-Row Responsive Header**:
+  - Row 1: `Jev` status dot, active website favicon, full page title, and **📋 Copy as Markdown** button.
+  - Row 2: Action buttons for **📊 Sentiment**, **🔍 Custom Scan**, **👁 All Highlights** toggle, and **🗑 Clear**.
+- **Zero Layout Shift**: All highlights use zero margin, zero padding, and display inline with thin 1.5px outlines to guarantee zero page reflow.
 
 ## Local does not mean offline
 

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jev • Ask This Page</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Professional Two-Row Header -->
+    <header class="panel-header">
+      <!-- Row 1: Brand & Active Page Identity -->
+      <div class="header-row-1">
+        <div class="header-brand">
+          <span class="status-dot" id="serverStatusDot" title="Local Jev Server Connected"></span>
+          <span class="app-title">Jev</span>
+        </div>
+        <div class="page-title-box" id="pageTitleBox" title="Active Page">
+          <img id="pageFavicon" class="page-favicon hidden" src="" alt="favicon">
+          <span id="pageTitleText" class="page-title-text">Connecting to page…</span>
+        </div>
+        <button class="icon-btn" id="copyMdBtn" title="Copy conversation & insights as Markdown">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Row 2: Action Toolbar -->
+      <div class="header-row-2">
+        <div class="action-bar-left">
+          <button class="action-btn" id="sentimentScanBtn" title="Analyze page sentiment">
+            <span class="btn-icon">📊</span> Sentiment
+          </button>
+          <button class="action-btn" id="customScanToggleBtn" title="Custom semantic search & scan">
+            <span class="btn-icon">🔍</span> Custom Scan
+          </button>
+        </div>
+        <div class="action-bar-right">
+          <button class="action-btn toggle-btn" id="toggleHighlightsBtn" title="Toggle highlight visibility on webpage">
+            <span id="highlightEyeIcon">👁</span> <span id="highlightToggleText">On</span>
+          </button>
+          <button class="action-btn danger-btn" id="clearBtn" title="Clear page chat & stored data">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Custom Scan Expandable Tray -->
+      <div class="custom-scan-tray hidden" id="customScanTray">
+        <div class="tray-input-row">
+          <input type="text" id="customScanInput" placeholder="What to scan for? (e.g. name, place, animal, thing)">
+          <button class="btn-run-scan" id="runCustomScanBtn">Scan</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Message Stream -->
+    <main class="message-stream" id="messageStream">
+      <div class="welcome-box" id="welcomeBox">
+        <div class="welcome-title">Ask about this page</div>
+        <p class="welcome-desc">Type any question below or run a scan above. Highlights and chat are automatically saved for this page.</p>
+      </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast hidden" id="toast">Copied to clipboard!</div>
+
+    <!-- Input Footer -->
+    <footer class="panel-footer">
+      <div class="input-container">
+        <textarea id="chatInput" rows="1" placeholder="Ask a question about this page…" autofocus></textarea>
+        <button id="sendBtn" class="send-btn" title="Send question">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <div class="footer-hint">Enter to send • Shift+Enter for new line</div>
+    </footer>
+  </div>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

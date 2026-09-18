@@ -2,121 +2,147 @@
 
 A Chrome extension that asks **TypeSafe Jev** whether the current page contains an answer, then takes you to the supporting passage and highlights it.
 
-## Architecture
+## Pure-local setup
+
+There is **no Vercel, no hosted backend, and no cloud server you run**.
+
+Only the Jev inference API is remote. Everything else runs on your computer:
 
 ```
-Web page → extension extracts text → /api/ask → Jev
-                                      ↓
-                              answer_found (noul)
-                                      ↓
-                              best_evidence (choice)
-                                      ↓
-                              extension highlights
+Chrome extension
+      ↓
+127.0.0.1:8787
+      ↓
+Local Node.js server
+      ↓
+TypeSafe Jev API
+      ↓
+answer_found + best_evidence
+      ↓
+Chrome extension
+      ↓
+scroll + highlight
 ```
 
-The TypeSafe API key is **server-side only**. It is never put in the extension.
+Your TypeSafe API key stays on your computer and is never included in the extension.
 
-## Deploy the Jev backend
+## Requirements
 
-This repo includes a Vercel serverless endpoint at `api/ask.js`.
+- Node.js 18+ (Node 20+ recommended)
+- TypeSafe API key
+- Chrome
 
-### 1. Get a TypeSafe API key
-
-Create/get your key from your TypeSafe account.
-
-### 2. Install Vercel CLI
+## 1. Clone
 
 ```bash
-npm i -g vercel
+git clone https://github.com/chiragrohit/jev-extension.git
+cd jev-extension
 ```
 
-### 3. Deploy
+## 2. Set the API key
 
-From this repository:
+### Windows PowerShell
+
+```powershell
+$env:TYPESAFE_API_KEY="YOUR_API_KEY"
+```
+
+### macOS / Linux
 
 ```bash
-vercel
+export TYPESAFE_API_KEY="YOUR_API_KEY"
 ```
 
-Link the project when prompted, then add the secret:
+Do not commit the key.
+
+## 3. Start the local server
 
 ```bash
-vercel env add TYPESAFE_API_KEY
+npm start
 ```
 
-Paste your TypeSafe API key. Do **not** commit the key.
-
-Deploy production:
-
-```bash
-vercel --prod
-```
-
-Your API endpoint will be:
+You should see:
 
 ```
-https://YOUR-PROJECT.vercel.app/api/ask
+Jev local server: http://127.0.0.1:8787/api/ask
 ```
 
-### 4. Configure the extension
+Keep this terminal running.
 
-1. Open `chrome://extensions`.
-2. Enable **Developer mode**.
-3. Click **Load unpacked**.
-4. Select this repository.
-5. Open the extension.
-6. Expand **Settings**.
-7. Enter your deployed endpoint, e.g. `https://YOUR-PROJECT.vercel.app/api/ask`.
-8. Click **Save**.
+## 4. Load the Chrome extension
 
-For local development, use:
+Open:
 
 ```
-npm install
-vercel dev
+chrome://extensions
 ```
 
-and keep the default endpoint:
+Then:
+
+1. Enable **Developer mode**.
+2. Click **Load unpacked**.
+3. Select the repository folder.
+4. Open any webpage.
+5. Click the Jev extension icon.
+
+The extension is hard-wired to:
 
 ```
-http://localhost:3000/api/ask
+http://127.0.0.1:8787/api/ask
 ```
 
-Set `TYPESAFE_API_KEY` in the Vercel/local environment before testing.
+There is no backend URL setting because this is intentionally local-only.
 
-## Use it
+## 5. Ask
 
-Ask questions such as:
+Example:
 
-- “Does this page mention the application deadline?”
-- “Does this page say who is eligible?”
-- “Is a budget amount specified on this page?”
+> Does this page mention the application deadline?
 
-If Jev determines that the answer exists, the extension returns the selected evidence passage. Click **Go to answer** to scroll to and highlight it.
+If Jev finds an answer:
 
-If the answer is not present, it shows:
+```
+✓ Answer found on this page
 
-**No answer found on this page.**
+"The last date for applications is..."
+    
+[Go to answer]
+```
+
+Click **Go to answer** and the extension scrolls to and highlights the passage.
+
+If the answer is not present:
+
+```
+✕ No answer found on this page
+```
+
+## Local does not mean offline
+
+The extension and your server are local. **Jev itself is accessed through its API**, so the machine needs internet access for semantic evaluation.
+
+Page content sent to Jev is processed by the TypeSafe API.
 
 ## Security
 
-Never put `TYPESAFE_API_KEY` in:
+- API key exists only as `TYPESAFE_API_KEY` in your local process environment.
+- The server binds to `127.0.0.1`.
+- The extension never receives the API key.
+- `.gitignore` excludes common local secrets and dependencies.
+- Never commit an API key to GitHub.
 
-- `manifest.json`
-- `popup.js`
-- `content.js`
-- GitHub
-- Chrome extension storage
+## Implementation
 
-The extension only stores your backend URL. The server sends requests to `https://api.typesafe.ai/v1/systemone` using the server-side key and the `jev-latest` model.
+Jev performs:
 
-## Design
+1. `answer_found` — semantic yes/no judgment.
+2. `best_evidence` — selection of the passage that answers the question.
 
-Jev handles the semantic decisions:
+Normal JavaScript performs:
 
-1. **answer_found** — whether the page actually answers the question.
-2. **best_evidence** — which candidate passage is the answer.
-
-Code handles page extraction, lightweight candidate retrieval, API orchestration, and deterministic scrolling/highlighting.
-
-This follows TypeSafe's model: **code owns the workflow; Jev supplies the semantic judgment.**
+- page text extraction
+- candidate retrieval
+- API orchestration
+- DOM lookup
+- scrolling
+- highlighting

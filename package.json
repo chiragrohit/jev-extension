@@ -1,1 +1,1 @@
-{"name":"jev-extension","private":true,"version":"0.2.0","description":"Jev-powered Ask This Page Chrome extension with a serverless API.","scripts":{"dev":"vercel dev"}}
+{"name":"jev-extension","private":true,"version":"0.3.0","type":"module","description":"Pure-local Jev-powered Ask This Page Chrome extension.","scripts":{"start":"node server.js"}}

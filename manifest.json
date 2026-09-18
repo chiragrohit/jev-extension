@@ -1,18 +1,1 @@
-{
-  "manifest_version": 3,
-  "name": "Jev — Ask This Page",
-  "version": "0.1.0",
-  "description": "Ask a yes/no question about the current page and jump to the supporting passage.",
-  "permissions": ["activeTab", "storage", "scripting"],
-  "action": {
-    "default_popup": "popup.html"
-  },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
-    }
-  ],
-  "icons": {}
-}
+{"manifest_version":3,"name":"Jev — Ask This Page","version":"0.2.0","description":"Ask a yes/no question about the current page and jump to the supporting passage.","permissions":["activeTab","storage"],"action":{"default_popup":"popup.html"},"content_scripts":[{"matches":["<all_urls>"],"js":["content.js"],"run_at":"document_idle"}]}
